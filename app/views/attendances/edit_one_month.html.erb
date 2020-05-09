@@ -7,7 +7,6 @@
         <tr>
           <th>日付</th>
           <th>曜日</th>
-          <th>勤怠登録</th>
           <th>出勤時間</th>
           <th>退勤時間</th>
           <th>在社時間</th>
@@ -21,7 +20,7 @@
             <tr>
               <td><%= l(day.worked_on, format: :short) %></td>
               <td><%= $days_of_the_week[day.worked_on.wday] %></td>
-              <% if !current_user.admin? && (Date.current < day.worked_on) %>
+              <% if (Date.current < day.worked_on) %>
                 <td><%= attendance.time_field :started_at, readonly: true, class: "form-control" %></td>
                 <td><%= attendance.time_field :finished_at, readonly: true, class: "form-control" %></td>
               <% else %>

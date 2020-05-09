@@ -19,14 +19,14 @@
 
 <div class="btn-users-show">
   <%= link_to "⇦ 前月へ", user_path(date: @first_day.prev_month), class: "btn btn-info" %>
-  <%= link_to "1ヶ月の勤怠編集へ", attendances_edit_one_month_user_path(date: @first_day), class: "btn btn-success" %>
+  <%= link_to "勤怠を編集", attendances_edit_one_month_user_path(date: @first_day), class: "btn btn-success" %>
   <%= link_to "次月へ ⇨", user_path(date: @first_day.next_month), class: "btn btn-info" %>
 </div>
 
 <div>
   <table class="table table-bordered table-condensed table-hover" id="table-attendances">
     <thead>
-      <tr>
+      <tr><!--rowspan:縦結合、colspan：横結合-->
         <th>日付</th>
         <th>曜日</th>
         <th>勤怠登録</th>
@@ -41,7 +41,10 @@
       <% @attendances.each do |day| %>
         <tr>
           <td><%= l(day.worked_on, format: :short) %></td>
-          <td><%= $days_of_the_week[day.worked_on.wday] %></td>
+          <td class="<% if day.worked_on.saturday? %>sat<% end %>
+                     <% if day.worked_on.sunday? %>sun<% end %>">
+            <%= $days_of_the_week[day.worked_on.wday] %>
+          </td>
           <td>
             <% if btn_text = attendance_state(day) %>
               <%= link_to "#{btn_text}登録", user_attendance_path(@user, day), method: :patch, class: "btn btn-primary btn-attendance" %>
