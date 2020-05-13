@@ -1,5 +1,12 @@
 <% provide(:title, 'All Users') %>
+
 <h1>ユーザー一覧</h1>
+
+<p>ユーザー検索</p>
+<%= form_with url: users_path, method: :get, local: true do |form| %>
+  <%= form.text_field :search %>
+  <%= form.submit 'Search', name: nil %>
+<% end %>
 
 <div class="row">
   <div class="col-md-10 col-md-offset-1">
@@ -40,7 +47,7 @@
         </td>
       </tr>
     <% end %>
-  </table>
+    </table>
     <%= will_paginate %>
   </div>
 </div>
