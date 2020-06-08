@@ -7,7 +7,7 @@ class UsersController < ApplicationController
   before_action :set_one_month, only: %i(show)
   
   def index
-    @users = User.paginate(page: params[:page],per_page:20)
+    @users = User.paginate(page: params[:page],per_page:10)
     if params[:search].present?
       @users = User.paginate(page: params[:page]).search(params[:search]) 
     end
@@ -70,6 +70,11 @@ class UsersController < ApplicationController
     redirect_to users_url
   end
   
+  def import
+    User.import(params[:file])
+    redirect_to users_url
+  end
+  
   private
   
     def user_params
@@ -77,6 +82,6 @@ class UsersController < ApplicationController
     end
     
     def basic_info_params
-      params.require(:user).permit(:department, :basic_time, :work_time)
+      params.require(:user).permit(:department, :basic_work_time, :designated_work_start_time, :designated_work_end_time, :work_time)
     end
 end

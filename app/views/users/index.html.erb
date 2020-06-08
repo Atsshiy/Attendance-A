@@ -6,20 +6,33 @@
 
 <div class="row">
   <div class="col-md-10 col-md-offset-1">
+    <!--csvファイルアップロード !-->
+    <div class="csv-file-upload">
+      <%= form_tag import_users_path, multipart: true do %>
+        <%= file_field_tag :file %>
+        <%= submit_tag "csvインポート", class: "btn btn-primary" %>
+      <% end %>
+    </div>
+    
     <%= will_paginate %>
 
     <% @users.each do |user| %>
+      <% @user = user %>
       <div class="name-index"><%= user.name %></div>
-      <div class="delete-index">
-        <%= link_to "削除", user, method: :delete,
-          data: { confirm: "削除してよろしいですか？" }, class: "btn btn-primary" %>
-      </div>
-      <div class="edit-back">
-        <button type="button" class="btn btn-primary btn-lg edit-index"
-          data-toggle="collapse" data-target="#example-<%= user.id %>" 
-          aria-expand="false" aria-controls="example-<%= user.id %>"
-        >編集</button>
-      </div>
+        <div class="delete-index">
+          <%= link_to "削除", user, method: :delete,
+            data: { confirm: "削除してよろしいですか？" }, class: "btn btn-primary" %>
+        </div>
+        <div class="edit-back">
+          <button type="button" class="btn btn-primary btn-lg edit-index"
+             data-toggle="collapse" data-target="#edit-user-<%= user.id %>" 
+            aria-expand="false" aria-controls="edit-user-<%= user.id %>">編集</button>
+          <div class="collapse" id="edit-user-<%= user.id %>">
+            <div class="card card-body">
+              <%= render 'form' %>
+            </div>
+          </div>
+        </div>
     <% end %>
     
     <%= will_paginate %>

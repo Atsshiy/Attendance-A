@@ -3,9 +3,9 @@
     <div class="alert alert-danger">
       入力エラーが<%= @user.errors.count %>件ありました。
     </div>
-    <ul>
+     <ul>
     <% @user.errors.full_messages.each do |msg| %>
-      <li><%= msg %></li>
+       <li><%= msg %></li>
     <% end %>
     </ul>
   </div>

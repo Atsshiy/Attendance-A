@@ -15,6 +15,7 @@ gem 'jbuilder',     '~> 2.5'
 gem 'will_paginate'
 gem 'bootstrap-will_paginate'
 gem 'rounding'
+gem 'roo'
 
 group :development, :test do
   gem 'sqlite3'
