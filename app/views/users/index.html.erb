@@ -8,8 +8,8 @@
   <div class="col-md-10 col-md-offset-1">
     <!--csvファイルアップロード !-->
     <div class="csv-file-upload">
-      <%= form_tag import_users_path, multipart: true do %>
-        <%= file_field_tag :file %>
+      <%= form_tag import_users_path, method: :post, multipart: true do %>
+        <%= file_field_tag :csv_file %>
         <%= submit_tag "csvインポート", class: "btn btn-primary" %>
       <% end %>
     </div>
