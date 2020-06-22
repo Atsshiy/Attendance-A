@@ -15,6 +15,9 @@ Rails.application.routes.draw do
       get 'attendances/edit_one_month'
       patch 'attendances/update_one_month'
     end
+    collection do
+      get 'working_list'
+    end
     resources :attendances, only: :update
   end
 

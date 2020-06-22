@@ -49,7 +49,7 @@ class User < ApplicationRecord
   end
   
   def self.import(file)
-    CSV.foreach(file.path, headers: true, encoding: 'Shift_JIS:UTF-8') do |row|
+    CSV.foreach(file.path, headers: true, encoding: 'UTF-8') do |row|
       user =  find_by(id: row["id"]) || new
       user.attributes = row.to_hash.slice(*updatable_attributes)
       user.save!
@@ -61,6 +61,11 @@ class User < ApplicationRecord
     ["name", "email", "department", "employee_number", "uid", "password",
     "basic_work_time", "designated_work_start_time", "designated_work_end_time",
     "superior", "admin"]
+  end
+  
+  def self.working_users
+    working_users = Attendance.where(worked_on: Date.today, finished_at:nil).where.not(started_at:nil).pluck(:user_id).uniq
+    where(id: working_users)
   end
   
 end

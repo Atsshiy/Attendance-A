@@ -81,6 +81,10 @@ class UsersController < ApplicationController
     end
   end
   
+  def working_list
+    @working_users = User.working_users
+  end 
+  
   private
   
     def user_params
