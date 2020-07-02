@@ -1,0 +1,44 @@
+<% provide(:title, '拠点情報一覧') %>
+
+<h1>拠点情報一覧</h1>
+
+<div class="row">
+  <div class="col-md-10 col-md-offset-1">
+    <table class="table table-bordered table-striped table-condensed">
+      <thead>
+        <tr>
+          <td></td>
+          <td></td>
+          <td>拠点番号</td>
+          <td>拠点名</td>
+          <td>拠点種類</td>
+        </tr>
+      </thead>
+      
+      <% @offices.each do |office| %>
+      <tbody>
+        <tr>
+          <td>
+            <%= link_to "修正", edit_office_path(office), remote: :true, class: "btn btn-primary" %>
+          </td>
+          <td class="delete-index">
+            <%= link_to "削除", office, method: :delete,
+            data: { confirm: "削除してよろしいですか？" }, class: "btn btn-primary" %>
+          </td>
+          <td><%= office.office_number %></td>
+          <td><%= office.office_name %></td>
+          <td><%= office.office_category %></td>
+        </tr>
+      </tbody>
+      <% end %>
+    </table>
+    <div id="add-office-info">
+      <%= link_to "拠点情報追加", new_office_path, remote: :true, class: "btn btn-primary" %>
+    </div>
+  </div>
+</div>
+
+<!-- モータルウィンドウ追加 -->
+<div id="new" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+<!-- モータルウィンドウ修正 -->
+<div id="edit" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
