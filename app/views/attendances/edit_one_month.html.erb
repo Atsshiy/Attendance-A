@@ -9,39 +9,52 @@
           <th>曜日</th>
           <th>出勤時間</th>
           <th>退勤時間</th>
+          <th>翌日</th>
           <th>在社時間</th>
           <th>備考</th>
+          <th>指示者確認㊞</th>
         </tr>
       </thead>
   
       <tbody>
         <% @attendances.each do |day| %>
           <%= f.fields_for "attendances[]", day do |attendance| %>
+          <%= attendances.hidden_field, :change_status, :value => "申請中" %>
             <tr>
               <td><%= l(day.worked_on, format: :short) %></td>
               <td><%= $days_of_the_week[day.worked_on.wday] %></td>
-              <% if (Date.current < day.worked_on) %>
-                <td><%= attendance.time_field :started_at, readonly: true, class: "form-control" %></td>
-                <td><%= attendance.time_field :finished_at, readonly: true, class: "form-control" %></td>
+              <% if Date.current < day.worked_on %>
+                <td><%= attendance.time_field :changed_started_at, disabled: true, class: "form-control" %></td>
+                <td><%= attendance.time_field :changed_finished_at, disabled: true, class: "form-control" %></td>
+                <td><%= attendance.check_box :next_day, disabled: true, id: "tomorrow" %></td>
+                <td>
+                  <% if day.changed_started_at.present? && day.changed_finished_at.present? %>
+                    <%= str_times = overtime_worked(day.changed_finished_at, day.changed_started_at, day.next_day) %>
+                    <% @total_working_times = @total_working_times.to_f + str_times.to_f %>
+                  <% end %>
+                </td>
+                <td><%= attendance.text_field :note, placeholder: "変更理由を記載してください", disabled: true,class: "form-control" %></td>
+                <td><%= f.collection_select :indicater_check_edit, @superior, :id, :name,{include_blank: "上長を選択してください"}, disabled:true, class: "form-control" %>
               <% else %>
-                <td><%= attendance.time_field :started_at, class: "form-control" %></td>
-                <td><%= attendance.time_field :finished_at, class: "form-control" %></td>
+                <td><%= attendance.time_field :changed_started_at, class: "form-control" %></td>
+                <td><%= attendance.time_field :changed_finished_at, class: "form-control" %></td>
+                <td><%= attendance.check_box :next_day, id: "tomorrow" %></td>
+                <td>
+                  <% if day.changed_started_at.present? && day.changed_finished_at.present? %>
+                    <%= str_times = overtime_worked(day.changed_finished_at, day.changed_started_at, day.next_day) %>
+                    <% @total_working_times = @total_working_times.to_f + str_times.to_f %>
+                  <% end %>
+                </td>
+                <td><%= attendance.text_field :note, placeholder: "変更理由を記載してください", class: "form-control" %></td>
+                <td><%= f.collection_select (:indicater_check_edit, @superior, :id, :name,{include_blank: "上長を選択してください"}, {class: "form-control"}) %>
               <% end %>
-              <td>
-                <% if day.started_at.present? && day.finished_at.present? %>
-                  <%= working_times(day.started_at.floor_to(60*15), day.finished_at.floor_to(60*15)) %>
-                <% end %>
-              </td>
-              <td><%= attendance.text_field :note, class: "form-control" %></td>
             </tr>
-          <% end %>
         <% end %>
       </tbody>
     </table>
   </div>
-  
   <div class="center">
-    <%= f.submit "まとめて更新", class: "btn btn-lg btn-primary" %>
+    <%= f.submit "保存する", class: "btn btn-lg btn-primary" %>
     <%= link_to "キャンセル", user_path(date: @first_day), class: "btn btn-lg btn-default" %>
   </div>
 <% end %>

@@ -1,0 +1,54 @@
+<div class="modal-dialog model-lg modal-dialog-center">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <%= form_with(model: @user, url: update_notice_overtime_user_attendance_path, local: true, method: :patch) do |f| %>
+          <% @user.each do |user| %>
+            <h2 class="modal-title">【<%= user.name %>からの残業申請】</h2>
+              <table class="table table-bordered table-condensed table-striped table-hover">
+                <thead>
+                 <tr>
+                   <th>日付</th>
+                   <th>曜日</th>
+                   <th>終了予定時間</th>
+                   <th>指定勤務終了時間</th>
+                   <th>時間外時間</th>
+                   <th>業務処理内容</th>
+                   <th>指示者確認㊞</th>
+                   <th>変更</th>
+                   <th>勤怠を確認する</th>
+                 </tr>
+                </thead>
+                <% @attendances.each do |day| %>
+                    <%= f.fields_for "attendances[]", day do |at| %>
+                      <% if day.user_id == user_id && day.overtime_status == "申請中" && current_user.name == day.overtime_check %>
+                        <tbody>
+                          <td><%= l(day.worked_on, format: :short) %></td>
+                          <td class="<% if day.worked_on.saturday? %>sat<% end %>
+                               <% if day.worked_on.sunday? %>sun<% end %>">
+                            <%= $days_of_the_week[day.worked_on.wday] %>
+                          </td>
+                          <td><%= day.scheduled_end_time.try(:strftime,"%H:%M") %></td>
+                          <td><%= format_basic_info(user.designated_work_end_time) %></td>
+                          <td><%= overtime_worked(day.scheduled_end_time, @user.designated_work_end_time, day.tomorrow) %></td>
+                          <td><%= day.business_process_content %></td>
+                          <td><%= at.select :overtime_status, Attendance.overtime_statuses.keys, { prompt: "選択してください" } %></td>
+                          <td><%= at.check_box :notice_overtime_change %></td>
+                          <td><%= link_to "確認", verifacation_user_path(user.id, worked_on: day.worked_on),class="btn btn-primary btn-block" %></td>
+                        </tbody>
+                      <% end %>
+                    <% end %>
+                  <% end %>
+              </table>
+            <% end %>
+            <div class="center">
+              <%= f.submit "変更を送信する", class="btn btn-primary btn-block btn-user" %>
+            </div>
+          </div>
+      <% end %>    
+    </div>
+  </div>

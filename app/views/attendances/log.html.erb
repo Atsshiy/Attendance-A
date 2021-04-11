@@ -1,0 +1,39 @@
+<% provide(:title, @user.name) %>
+<h1>勤怠ログ</h1>
+
+<p>
+<%= form_with url:log_user_attendance_path, local: true,method: :get do |f| %>
+  <%= f.date_select :worked_on, {use_month_numbers: true,discard_day: true,prompt:["年","月"]},{class:"form-control bootstrap-date-only-width"} %>
+  <%= submit_tag "検索", worked_on: :nil,class: "btn btn-md btn-primary" %>
+<% end %>
+</p>
+
+<div class="log-table">
+  <table class="table table-bordered table-condensed table-hover">
+    <thead class="log">
+      <tr>
+        <th>日付</th>
+        <th>変更前出勤時間</th>
+        <th>変更前退勤時間</th>
+        <th>変更後出勤時間</th>
+        <th>変更後退勤時間</th>
+        <th>指示者</th>
+        <th>承認日</th>
+      </tr>
+    </thead>
+    
+    <tbody>
+      <% @logs.each do |day| %>
+        <tr>
+          <td><%= day.worked_on.strftime("%Y年%m月%d日")%></td>
+          <td><%= day.started_at.try(:strftime("%H:%M") %></td>
+          <td><%= day.finished_at.try(:strftime("%H:%M") %></td>
+          <td><%= day.changed_started_at.try(:strftime("%H:%M")%></td>
+          <td><%= day.changed_finished_at.try(:strftime("%H:%M")%></td>
+          <td><%= day.indicater_check_edit %></td>
+          <td><%= day.updated_at.try(:strftime, "%Y年%m月%d日")(%></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

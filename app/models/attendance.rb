@@ -1,6 +1,10 @@
 class Attendance < ApplicationRecord
   belongs_to :user
-
+  
+  enum overtime_status:{"なし" => 0,"申請中" => 1,"承認" => 2,"否認" => 3}, _prefix: true
+  enum change_status:{"なし" => 0,"申請中" => 1,"承認" => 2,"否認" => 3}, _prefix: true
+  enum monthly_confirmation_status:{"なし" => 0,"申請中" => 1,"承認" => 2,"否認" => 3}, _prefix: true
+  
   validates :worked_on, presence: true
   validates :note, length: { maximum: 50 }
   

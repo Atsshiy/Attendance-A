@@ -1,0 +1,77 @@
+<div class="modal-dialog model-lg modal-dialog-center">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <%= form_with(model: @user, url: attendances_update_notice_overtime_user_path, local: true, method: :patch) do |f| %>
+        <% @user.each do |user| %>
+          <h2 class="modal-title">【<%= user.name %>からの勤怠変更申請】</h2>
+            <table class="table table-bordered notice_working-table">
+              <thead>
+                <tr>
+                  <th rowspan="3">日付</th>
+                  <th rowspan="3">曜日</th>
+                  <th colspan="4">変更前</th>
+                  <th colspan="4">変更後</th>
+                  <th rowspan="3">備考</th>
+                  <th rowspan="3">指示者確認㊞</th>
+                  <th rowspan="3">変更</th>
+                  <th rowspan="3">変更を確認する</th>
+                </tr>
+                <tr>
+                  <th colspan="2">出社</th>
+                  <th colspan="2">退社</th>
+                  <th colspan="2">出社</th>
+                  <th colspan="2">退社</th>
+                </tr>
+                <tr>
+                  <th>時</th>
+                  <th>分</th>
+                  <th>時</th>
+                  <th>分</th>
+                  <th>時</th>
+                  <th>分</th>
+                  <th>時</th>
+                  <th>分</th>
+                </tr>
+              </thead>
+                <% @attendances.each do |day| %>
+                  <%= f.fields_for "attendances[]", day do |d| %>
+                    <% if day.user_id == user.id && day.change_status == "申請中" && current_user.name == day.indicater_check %>
+                     <tbody>
+                      <td><%= l(day.worked_on, format: :short) %></td>
+                      <td class="<% if day.worked_on.saturday? %>sat<% end %>
+                            <% if day.worked_on.sunday? %>sun<% end %>">
+                        <%= $days_of_the_week[day.worked_on.wday] %>
+                      </td>
+                      <!--変更前-->
+                      <td><%= day.started_at.try(:strftime,"%H") %></td>
+                      <td><%= day.started_at.try(:strftime,"%M" %></td>
+                      <td><%= day.finished_at.try(:strftime,"%H") %></td>
+                      <td><%= day.finished_at.try(:strftime,"%M") %></td>
+                      <!--変更後-->
+                      <td><%= day.changed_started_at.try(:strftime,"%H") %></td>
+                      <td><%= day.changed_started_at.try(:strftime,"%M") %></td>
+                      <td><%= day.changed_finished_at.try(:strftime,"%H") %></td>
+                      <td><%= day.changed_finished_at.try(:strftime,"%M") %></td>
+                      <!--備考-->
+                      <td><%= day.note %></td>
+                      <td><%= d.select :monthly_confirmation_status, Attendance.monthly_confirmation_statuses.keys, { prompt: "選択してください" }}, class:"form-control" %></td>
+                      <td><%= d.check_box :change_check %></td>
+                      <td><%= link_to "確認", user_path(user_id, worked_on: day.worked_on), class: "btn btn-primary", target: :_blank %></td>
+                    </tbody>
+                  <% end %>
+                <% end %>
+              </table>
+            <% end %>
+            <div class="center">
+              <%= f.submit "変更を送信する", class="btn btn-primary btn-block btn-user" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>

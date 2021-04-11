@@ -68,4 +68,8 @@ class User < ApplicationRecord
     where(id: working_users)
   end
   
+  #User.sperior_users呼び出し
+  scope :superior_users, -> { where(superior:true)}
+  scope :superior_users_without_me, -> { where(superior:true).where.not(id:current_user.id)}
+  
 end

@@ -2,8 +2,9 @@ class UsersController < ApplicationController
   before_action :set_user, only: %i(show edit update destroy edit_basic_info update_basic_info)
   before_action :logged_in_user, only: %i(index edit update destroy edit_basic_info update_basic_info)
   before_action :correct_user, only: %i(edit update)
+  before_action :not_correct_user, only: %i(show)
   before_action :admin_user, only: %i(index working_list destroy edit_basic_info update_basic_info)
-  before_action :admin_or_correct_user, only: %i(show)
+  before_action :not_admin_user, only: %i(show)
   before_action :set_one_month, only: %i(show)
   
   def index
@@ -19,6 +20,17 @@ class UsersController < ApplicationController
   
   def show
     @worked_sum = @attendances.where.not(started_at: nil).count
+    @overtime = Attendance.where(overtime_status: "申請中",indicater_check: @user.name).count
+    @change = Attendance.where(change_status: "申請中",indicater_check_edit: @user.name).count
+    @month = Attendance.where(monthly_confirmation_status: "申請中",indicater_check_month: @user.name).count
+    @superior = User.superior_users_without_me
+    @attendance = @user.attendances.find_by(worked_on: @first_day)
+    #CSV出力
+    respond_to do |format|
+      format.html
+      filename = @user.name + ":" + l(@first_day, format: :middle) + "分の勤怠"
+      format.csv {send_data render_to_string, type: 'text/csv; charset=shift_jis',filename: "#{filename}.csv"}
+    end
   end
 
   def new
@@ -73,12 +85,11 @@ class UsersController < ApplicationController
   def import
     if params[:csv_file].blank?
       flash[:warning] = "ファイルが選択されてません"
-      redirect_to users_url
     else
       User.import(params[:csv_file])
       flash[:success] = "ユーザー情報をインポートしました。"
-      redirect_to users_url
     end
+    redirect_to users_url
   end
   
   def working_list
@@ -88,10 +99,10 @@ class UsersController < ApplicationController
   private
   
     def user_params
-      params.require(:user).permit(:name, :email, :department, :employee_number, :uid, :designated_work_end_time, :designated_work_start_time, :password, :password_confirmation)
+      params.require(:user).permit(:name, :email, :affiliation, :employee_number, :uid, :designated_work_end_time, :designated_work_start_time, :password, :password_confirmation)
     end
     
     def basic_info_params
-      params.require(:user).permit(:department, :basic_work_time, :work_time)
+      params.require(:user).permit(:affiliation, :basic_work_time, :work_time)
     end
 end

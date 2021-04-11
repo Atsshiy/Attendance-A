@@ -17,25 +17,43 @@ class ApplicationController < ActionController::Base
   
   # アクセスしたユーザーが現在ログインしているユーザーか確認します。
   def correct_user
-    redirect_to root_url unless current_user?(@user)
+    @user = User.find(params[:id])
+    unless current_user?(@user)
+      flash[:danger] = "他者のページは閲覧できません"
+      redirect_to root_url
+    end
+  end
+  
+  def correct_user_b
+    @user = User.find(params[:user_id])
+    unless current_user?(@user)
+      flash[:danger] = "他者のページは閲覧できません"
+      redirect_to root_url
+    end
+  end
+  
+  def not_correct_user
+    unless current_user == @user
+      flash[:danger] = "他者のページは閲覧できません"
+      redirect_to root_url
+    end
   end
   
   # システム管理権限所有かどうか判定します。
   def admin_user
     unless current_user.admin?
-      flash[:danger] = "管理権限所有していません。"
+      flash[:danger] = "ページ遷移の権限がありません"
       redirect_to(root_url)
     end
   end
   
-  def admin_or_correct_user
-    @user = User.find(params[:user_id]) if @user.blank?
-    unless current_user?(@user) || current_user.admin?
-      flash[:danger] = "編集期限がありません。"
+  def not_admin_user
+    if current_user.admin?
+      flash[:danger] = "ページ遷移の権限がありません"
       redirect_to(root_url)
     end
   end
-    
+  
   def set_one_month 
     @first_day = params[:date].nil? ?
     Date.current.beginning_of_month : params[:date].to_date

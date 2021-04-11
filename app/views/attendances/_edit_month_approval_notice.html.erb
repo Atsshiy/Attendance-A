@@ -1,0 +1,41 @@
+<div class="modal-dialog model-lg modal-dialog-center">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <%= form_with(model: @user,url:update_month_approval_notice_user_attendance_path, local: true, method: :patch) do |f| %>
+        <% @users.each do |user| %>
+          <h2 class="modal-title"><%="【#{user.name}からの1ヶ月の勤怠申請】"%></h2>
+            <table class="table table-bordered table-condensed table-striped table-hover">
+              <thead>
+                <tr>
+                  <th>月</th>
+                  <th>指示者確認㊞</th>
+                  <th>変更</th>
+                  <th>勤怠を確認する</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @attendances.each do |day| %>
+                  <%= f.fields_for "attendances[]", day do |attendance| %>
+                    <tr>
+                      <td><%= day.monthly_apply.strftime("%-m月") %></td>
+                      <td><%= attendance.select :monthly_confirmation_status, Attendance.monthly_confirmation_statuses.keys, {prompt:"選択してください"}, {class:"form-control" ,required: true} %></td>
+                      <td><%= attendance.check_box :monthly_confirmation_change %></td>
+                      <td><%= link_to "確認", "#",class="btn btn-primary btn-block", target: :_blank %></td>
+                    </tr>
+                  <% end %>
+                <% end %>
+              </tbody>
+            </table>
+          <% end %>
+        <div class="center">
+          <%= f.submit "変更を送信する", class="btn btn-primary btn-block btn-user" %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
