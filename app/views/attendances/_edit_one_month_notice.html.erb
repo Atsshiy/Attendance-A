@@ -61,7 +61,7 @@
                       <td><%= day.note %></td>
                       <td><%= d.select :monthly_confirmation_status, Attendance.monthly_confirmation_statuses.keys, { prompt: "選択してください" }}, class:"form-control" %></td>
                       <td><%= d.check_box :change_check %></td>
-                      <td><%= link_to "確認", user_path(user_id, worked_on: day.worked_on), class: "btn btn-primary", target: :_blank %></td>
+                      <td><%= link_to "確認", verifacation_user_path(user_id, worked_on: day.worked_on), class: "btn btn-primary", target: :_blank %></td>
                     </tbody>
                   <% end %>
                 <% end %>

@@ -25,7 +25,7 @@
                       <td><%= day.monthly_apply.strftime("%-m月") %></td>
                       <td><%= attendance.select :monthly_confirmation_status, Attendance.monthly_confirmation_statuses.keys, {prompt:"選択してください"}, {class:"form-control" ,required: true} %></td>
                       <td><%= attendance.check_box :monthly_confirmation_change %></td>
-                      <td><%= link_to "確認", "#",class="btn btn-primary btn-block", target: :_blank %></td>
+                      <td><%= link_to "確認", verifacation_user_path(user_id, worked_on: day.worked_on),class="btn btn-primary", target: :_blank %></td>
                     </tr>
                   <% end %>
                 <% end %>

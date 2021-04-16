@@ -38,7 +38,7 @@
                           <td><%= day.business_process_content %></td>
                           <td><%= at.select :overtime_status, Attendance.overtime_statuses.keys, { prompt: "選択してください" } %></td>
                           <td><%= at.check_box :notice_overtime_change %></td>
-                          <td><%= link_to "確認", verifacation_user_path(user.id, worked_on: day.worked_on),class="btn btn-primary btn-block" %></td>
+                          <td><%= link_to "確認", verifacation_user_path(user.id, worked_on: day.worked_on),class="btn btn-primary" %></td>
                         </tbody>
                       <% end %>
                     <% end %>
