@@ -3,12 +3,13 @@ ja:
     models:
       user: ユーザー
       attendance: 勤怠
+      office: 拠点
     attributes:
         user:
           id: ID
           name: 名前
           email: メールアドレス
-          department: 所属
+          affiliation: 所属
           employee_number: 社員番号
           uid: カードID
           basic_work_time: 基本勤務時間
@@ -25,3 +26,7 @@ ja:
           finished_at: 退勤時間
           note: 備考
           user: ユーザーID
+        office:
+          office_number: 拠点番号
+          office_name: 拠点名
+          office_category: 拠点情報

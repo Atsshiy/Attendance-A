@@ -6,7 +6,7 @@
       </button>
     </div>
     <div class="modal-body">
-      <%= form_with(model: @user,url:update_month_approval_notice_user_attendance_path, local: true, method: :patch) do |f| %>
+      <%= form_with(model: @user, url:update_month_approval_notice_user_attendance_path, local: true, method: :patch) do |f| %>
         <% @users.each do |user| %>
           <h2 class="modal-title"><%="【#{user.name}からの1ヶ月の勤怠申請】"%></h2>
             <table class="table table-bordered table-condensed table-striped table-hover">

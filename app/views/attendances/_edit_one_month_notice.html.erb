@@ -6,7 +6,7 @@
       </button>
     </div>
     <div class="modal-body">
-      <%= form_with(model: @user, url: attendances_update_notice_overtime_user_path, local: true, method: :patch) do |f| %>
+      <%= form_with(model: @user, url: update_one_month_notice_user_attendance, local: true, method: :patch) do |f| %>
         <% @user.each do |user| %>
           <h2 class="modal-title">【<%= user.name %>からの勤怠変更申請】</h2>
             <table class="table table-bordered notice_working-table">

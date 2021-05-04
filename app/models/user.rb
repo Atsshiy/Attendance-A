@@ -9,7 +9,7 @@ class User < ApplicationRecord
   validates :email, presence: true, length: { maximum: 100 },
                     format: { with: VALID_EMAIL_REGEX },
                     uniqueness: true
-  validates :department, length: { in: 2..50 }, allow_blank: true
+  validates :affiliation, length: { in: 2..50 }, allow_blank: true
   #validates :basic_work_time, presence: true
   #validates :designated_work_start_time, presence: true
   #validates :designated_work_end_time, presence: true
@@ -40,14 +40,6 @@ class User < ApplicationRecord
     update_attribute(:remember_digest, nil)
   end
   
-  def self.search(search)
-    if search
-      User.where(['name LIKE ?',"%#{search}%"])
-    else
-      User.all
-    end
-  end
-  
   def self.import(file)
     CSV.foreach(file.path, headers: true, encoding: 'UTF-8') do |row|
       user =  find_by(id: row["id"]) || new
@@ -58,7 +50,7 @@ class User < ApplicationRecord
   
   # 更新を許可するカラムを定義
   def self.updatable_attributes
-    ["name", "email", "department", "employee_number", "uid", "password",
+    ["name", "email", "affiliation", "employee_number", "uid", "password",
     "basic_work_time", "designated_work_start_time", "designated_work_end_time",
     "superior", "admin"]
   end
